@@ -41,7 +41,10 @@ class TestDoubleLinkedList(unittest.TestCase):
 
     def test_delete(self):
         list = DoubleLinkedList(Item("Moscow"))
+        list.push("Moscow")
+        list.push("Moscow")
         self.assertTrue(list.delete("Moscow"))
+        self.assertEqual(list.len(), 0)
         self.assertEqual(list.delete("Moscow"), "List is empty")
         list.push("Minsk")
         self.assertFalse(list.delete("Moscow"))

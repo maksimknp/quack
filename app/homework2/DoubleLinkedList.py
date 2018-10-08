@@ -84,6 +84,7 @@ class DoubleLinkedList(object):
             if current_item.get_data() == data:
                 previous_item = current_item.get_previous_item()
                 next_item = current_item.get_next_item()
+                self.size -= 1
 
                 if previous_item is not None:
                     previous_item.set_next_item(next_item)
@@ -92,9 +93,10 @@ class DoubleLinkedList(object):
 
                 if next_item is not None:
                     next_item.set_previous_item(previous_item)
+                    current_item = next_item
+                else:
+                    return True
 
-                self.size -= 1
-                return True
             else:
                 current_item = current_item.get_next_item()
         return False
