@@ -42,26 +42,28 @@ class DoubleLinkedList(object):
         return self.size
 
     def pop(self):
-        if self.size == 0:
-            return "List is empty"
-        elif self.size == 1:
+        current_last_item = self.last()
+        if self.size == 1:
             self.root = None
             self.size = 0
-        else:
+        elif self.size > 1:
             last_item = self.last()
             last_item.get_previous_item().set_next_item(None)
             self.size -= 1
+        return current_last_item
 
     def shift(self):
-        if self.size == 0:
-            return "List is empty"
-        elif self.size == 1:
+        current_root = self.root
+        if self.size == 1:
+            current_root = self.root
             self.root = None
             self.size = 0
-        else:
+        elif self.size > 1:
+            current_root = self.root
             self.root = self.root.get_next_item()
             self.root.set_previous_item(None)
             self.size -= 1
+        return current_root
 
     def contains(self, data):
         if self.size == 0:

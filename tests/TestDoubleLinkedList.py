@@ -13,11 +13,9 @@ class TestDoubleLinkedList(unittest.TestCase):
     def test_pop(self):
         list = DoubleLinkedList(Item("Moscow"))
         list.push("Minsk")
-        list.pop()
-        self.assertEqual(list.last().get_data(), "Moscow")
-        list.pop()
-        self.assertIsNone(list.last())
-        self.assertEqual(list.pop(), "List is empty")
+        self.assertEqual(list.pop().get_data(), "Minsk")
+        self.assertEqual(list.pop().get_data(), "Moscow")
+        self.assertIsNone(list.pop())
 
     def test_unshift(self):
         list = DoubleLinkedList(Item("Moscow"))
@@ -27,11 +25,9 @@ class TestDoubleLinkedList(unittest.TestCase):
     def test_shift(self):
         list = DoubleLinkedList(Item("Moscow"))
         list.push("Minsk")
-        list.shift()
-        self.assertEqual(list.last().get_data(), "Minsk")
-        list.shift()
-        self.assertIsNone(list.last())
-        self.assertEqual(list.shift(), "List is empty")
+        self.assertEqual(list.shift().get_data(), "Moscow")
+        self.assertEqual(list.shift().get_data(), "Minsk")
+        self.assertIsNone(list.shift())
 
     def test_len(self):
         list = DoubleLinkedList(Item("London"))
