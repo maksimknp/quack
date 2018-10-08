@@ -1,4 +1,4 @@
-from app.hw2.Item import Item
+from app.homework2.Item import Item
 
 
 class DoubleLinkedList(object):

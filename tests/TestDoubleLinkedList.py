@@ -1,6 +1,6 @@
 import unittest
-from app.hw2.Item import Item
-from app.hw2.DoubleLinkedList import DoubleLinkedList
+from app.homework2.Item import Item
+from app.homework2.DoubleLinkedList import DoubleLinkedList
 
 
 class TestDoubleLinkedList(unittest.TestCase):
