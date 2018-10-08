@@ -78,7 +78,7 @@ class DoubleLinkedList(object):
 
     def delete(self, data):
         if self.size == 0:
-            return "List is empty"
+            raise IOError("List is empty")
         current_item = self.root
         while current_item is not None:
             if current_item.get_data() == data:
@@ -99,4 +99,4 @@ class DoubleLinkedList(object):
 
             else:
                 current_item = current_item.get_next_item()
-        return False
+        raise IOError("Item not found")

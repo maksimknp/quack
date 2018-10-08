@@ -43,11 +43,14 @@ class TestDoubleLinkedList(unittest.TestCase):
         list = DoubleLinkedList(Item("Moscow"))
         list.push("Moscow")
         list.push("Moscow")
-        self.assertTrue(list.delete("Moscow"))
+        list.delete("Moscow")
         self.assertEqual(list.len(), 0)
-        self.assertEqual(list.delete("Moscow"), "List is empty")
+        with self.assertRaises(IOError):
+            list.delete("Moscow")
         list.push("Minsk")
-        self.assertFalse(list.delete("Moscow"))
+        with self.assertRaises(IOError):
+            list.delete("Moscow")
+
 
     def test_contains(self):
         list = DoubleLinkedList()
