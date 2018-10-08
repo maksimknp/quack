@@ -5,6 +5,9 @@ class Item(object):
         self.previous_item = previous_item
         self.next_item = next_item
 
+    def __repr__(self):
+        return "class: {}, data: '{}'".format(self.__class__.__name__, self.data)
+
     def get_data(self):
         return self.data
 
