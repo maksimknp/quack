@@ -4,7 +4,6 @@ from app.homework2.DoubleLinkedList import DoubleLinkedList
 
 
 class TestDoubleLinkedList(unittest.TestCase):
-
     def test_push(self):
         cities = DoubleLinkedList()
         for city in ['Moscow', 'Minsk']:
@@ -53,7 +52,6 @@ class TestDoubleLinkedList(unittest.TestCase):
         cities.push('Minsk')
         with self.assertRaises(IOError):
             cities.delete('Moscow')
-
 
     def test_contains(self):
         cities = DoubleLinkedList()
