@@ -4,3 +4,4 @@ venv/
 *.swo
 *.swp
 .idea/
+app/sem4/instance/
