@@ -1,4 +1,4 @@
-from app.sem4 import app
+from app.homework4 import app
 from flask import request, abort, jsonify
 
 
