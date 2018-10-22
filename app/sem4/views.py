@@ -2,31 +2,6 @@ from app.sem4 import app
 from flask import request, abort, jsonify
 
 
-@app.route('/<string:name>/')
-@app.route('/')
-def index(name='world'):
-    return "Hello, {}!".format(name)
-
-
-@app.route('/form/', methods=['GET', 'POST'])
-def form():
-    if request.method == "GET":
-        return """
-        <html>
-            <head></head>
-            <body>
-                <form method="POST", action ="/form/">
-                    <input name="first_name" >
-                    <input name="last_name" >
-                    <input type="submit" >
-                </form>
-            </body>
-        </html>"""
-    else:
-        rv = jsonify(request.form)
-        return rv
-
-
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == "GET":
@@ -99,7 +74,7 @@ def search_chats():
     return response
 
 
-@app.route('/create_pers_chat/', methods='POST')
+@app.route('/create_pers_chat/', methods=['POST'])
 def create_pers_chat():
     user_id = int(request.args.get('user_id'))
 
@@ -117,7 +92,7 @@ def create_pers_chat():
     return response
 
 
-@app.route('/create_group_chat/', methods='POST')
+@app.route('/create_group_chat/', methods=['POST'])
 def create_group_chat():
     topic = str(request.args.get('topic'))
 
@@ -135,18 +110,18 @@ def create_group_chat():
     return response
 
 
-@app.route('/add_members_to_group_chat/', methods='POST')
+@app.route('/add_members_to_group_chat/', methods=['POST'])
 def add_members_to_group_chat():
     chat_id = int(request.args.get('chat_id'))
-    users_ids = list(request.args.get('user_ids'))
+    user_ids = list(request.args.get('user_ids'))
     # No-op.
     response = jsonify({})
     response.status_code = 200
     return response
 
 
-@app.route('/leave_group_chat/', methods='POST')
-def add_members_to_group_chat():
+@app.route('/leave_group_chat/', methods=['POST'])
+def leave_group_chat():
     chat_id = int(request.args.get('chat_id'))
     # No-op.
     response = jsonify({})
@@ -154,7 +129,7 @@ def add_members_to_group_chat():
     return response
 
 
-@app.route('/send_message/', methods='POST')
+@app.route('/send_message/', methods=['POST'])
 def send_message():
     chat_id = int(request.args.get('chat_id'))
     content = str(request.args.get('content'))
@@ -180,7 +155,7 @@ def read_message():
     chat = {
         "chat_id": 1,
         "is_group_chat": False,
-        "topic": topic,
+        "topic": "abracadabra",
         "last_message": "argh!",
         "new_messages": 30,
         "last_read_message_id": 214
@@ -191,7 +166,7 @@ def read_message():
     return response
 
 
-@app.route('/upload_file/', methods='POST')
+@app.route('/upload_file/', methods=['POST'])
 def upload_file():
     chat_id = int(request.args.get('chat_id'))
     content = str(request.args.get('content'))
