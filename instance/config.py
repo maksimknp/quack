@@ -1,7 +1,7 @@
-class Production(object):
+class ProductionConfig(object):
     pass
 
 
-class Test(object):
+class TestConfig(object):
     TESTING = True
     DEBUG = True
