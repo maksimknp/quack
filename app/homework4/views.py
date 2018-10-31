@@ -1,5 +1,8 @@
+import json
+
 from app.homework4 import app
 from flask import request, abort, jsonify
+from app.homework5 import model
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -26,67 +29,47 @@ def login():
 def search_users():
     query = str(request.args.get('param'))
     limit = int(request.args.get('limit'))
-
-    user1 = {
-        "user_id": 1,
-        "nick": "the.good",
-        "name": "Clint Eastwood",
-        "avatar": "avatars/d9099cd0d3e6cb47fe3a9b0e631901fa.png"
-    }
-
-    user2 = {
-        "user_id": 2,
-        "nick": "the.bad",
-        "name": "Pack Man",
-        "avatar": "avatars.png"
-    }
-
-    response = jsonify({"users": [user1, user2]})
+    users = model.find_users_by_name_or_nick(query, limit)
+    response = jsonify({"users": users})
     response.status_code = 200
     return response
 
 
-@app.route('/search_chats/')
+@app.route('/list_chats/')
 def search_chats():
-    query = str(request.args.get('param'))
-    limit = int(request.args.get('limit'))
-
-    chat1 = {
-        "chat_id": 1,
-        "is_group_chat": False,
-        "topic": "Chuck Norris",
-        "last_message": "argh!",
-        "new_messages": 30,
-        "last_read_message_id": 214
-    }
-
-    chat2 = {
-        "chat_id": 2,
-        "is_group_chat": True,
-        "topic": "Mark Twen",
-        "last_message": "YOU!",
-        "new_messages": 13,
-        "last_read_message_id": 41
-    }
-
-    response = jsonify({"chats": [chat1, chat2]})
+    user_id = str(request.args.get('userid'))
+    chats = model.list_chats_by_user(user_id)
+    response = jsonify({"chats": chats})
     response.status_code = 200
     return response
 
 
-@app.route('/create_pers_chat/', methods=['POST'])
+@app.route('/create_pers_chat/', methods=['GET'])
 def create_pers_chat():
-    user_id = int(request.args.get('user_id'))
+    first_user_id = int(request.args.get('fuserid'))
+    second_user_id = int(request.args.get('suserid'))
 
-    chat = {
-        "chat_id": 1,
-        "is_group_chat": False,
-        "topic": "Chuck Norris",
-        "last_message": "argh!",
-        "new_messages": 30,
-        "last_read_message_id": 214
-    }
+    if first_user_id == second_user_id:
+        return
 
+    personal_chats = model.list_personal_chats_by_user(first_user_id)
+    new_chat_id = 0
+    for i in personal_chats:
+        chat_id = i.get('chat_id')
+
+        other_user_id = model.get_members_by_chat_without_user(chat_id, first_user_id).get('user_id')
+        if other_user_id == second_user_id:
+            new_chat_id = chat_id
+            break
+
+    if new_chat_id == 0:
+        model.create_new_personal_chat()
+        new_chat_id = int(model.get_max_chat_id().get('chat_id'))
+        print(new_chat_id)
+        model.create_new_member(first_user_id, new_chat_id)
+        model.create_new_member(second_user_id, new_chat_id)
+
+    chat = model.get_chat_by_id(new_chat_id)
     response = jsonify({"chat": chat})
     response.status_code = 200
     return response

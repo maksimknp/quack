@@ -2,6 +2,7 @@ import flask
 import psycopg2
 from instance import config
 from app.homework4 import app
+import psycopg2.extras
 
 
 def get_connection():
@@ -26,7 +27,10 @@ def query_one(sql, **params):
 def query_all(sql, **params):
     with get_cursor() as cur:
         cur.execute(sql, params)
-        return dict(cur.fetchall())
+        result = []
+        for row in cur.fetchall():
+            result.append(dict(row))
+        return result
 
 
 def _rollback_db(sender, exception, **extra):
@@ -37,10 +41,19 @@ def _rollback_db(sender, exception, **extra):
         delattr(flask.g, 'dbconn')
 
 
-def _commit_db(sender, exception, **extra):
+def _commit_db(sender, response):
     if hasattr(flask.g, 'dbconn'):
         conn = flask.g.dbconn
         conn.commit()
+        conn.close()
+        delattr(flask.g, 'dbconn')
+
+
+def insert(sql, **params):
+    with get_cursor() as cur:
+        cur.execute(sql, params)
+        id = get_cursor().lastrowid #forever return 0
+        return id
 
 
 flask.got_request_exception.connect(_rollback_db, app)

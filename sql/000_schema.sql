@@ -76,8 +76,32 @@ CREATE TABLE members
   chat_id              INTEGER           NOT NULL
     CONSTRAINT members_chat_id_fkey
     REFERENCES chats,
-  last_read_message_id INTEGER           NOT NULL
+  last_read_message_id INTEGER
     CONSTRAINT members_last_read_message_id_fkey
     REFERENCES messages,
   new_messages         INTEGER DEFAULT 0 NOT NULL
 );
+
+
+-- default initial--
+
+INSERT INTO users (nick, name, avatar)
+    VALUES ('maksim_knp', 'Maksim Konoplev', 'www.mail.ru'),
+           ('tomy_cash', 'Tomy Cash', 'www.tomy.cash.ru'),
+           ('timmy', 'Timmy Terner', 'www.timy.ru');
+
+INSERT INTO chats (is_group_chat, topic, last_message)
+    VALUES ( TRUE , 'general', 'Hello, everyone!'),
+           ( FALSE , 'Chat with teacher', 'OK, do it'),
+           ( TRUE, 'family chat', 'Yes');
+
+INSERT INTO messages (user_id, chat_id, content)
+    VALUES (1, 2, 'Hi, how are you?'),
+           (1, 1, 'Hi'),
+           (2, 1, 'Nice');
+
+INSERT INTO members (user_id, chat_id, last_read_message_id)
+    VALUES (1, 1, 3),
+           (1, 2, 1),
+           (2, 1, 3),
+           (3, 2, 1);
