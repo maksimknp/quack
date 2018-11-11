@@ -7,5 +7,5 @@ app = Flask(__name__)
 jsonrpc = JSONRPC(app, '/appi/')
 app.config.from_object(ProductionConfig)
 
-from app.views import *
+from app.controller import *
 from app.lesson6.views import *

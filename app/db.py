@@ -53,8 +53,8 @@ def _commit_db(sender, response):
 def insert(sql, **params):
     with get_cursor() as cur:
         cur.execute(sql, params)
-        id = get_cursor().lastrowid #forever return 0
-        return id
+        last_id = cur.lastrowid #forever return 0
+        return last_id
 
 
 flask.got_request_exception.connect(_rollback_db, app)

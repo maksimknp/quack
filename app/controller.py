@@ -34,7 +34,7 @@ def search_users():
 
 
 @app.route('/list_chats/')
-def search_chats():
+def list_chats():
     user_id = str(request.args.get('userid'))
     chats = model.list_chats_by_user(user_id)
     response = jsonify({"chats": chats})
@@ -42,7 +42,7 @@ def search_chats():
     return response
 
 
-@app.route('/create_pers_chat/', methods=['GET'])
+@app.route('/create_pers_chat/', methods=['POST'])
 def create_pers_chat():
     first_user_id = int(request.args.get('fuserid'))
     second_user_id = int(request.args.get('suserid'))
@@ -63,7 +63,6 @@ def create_pers_chat():
     if new_chat_id == 0:
         model.create_new_personal_chat()
         new_chat_id = int(model.get_max_chat_id().get('chat_id'))
-        print(new_chat_id)
         model.create_new_member(first_user_id, new_chat_id)
         model.create_new_member(second_user_id, new_chat_id)
 

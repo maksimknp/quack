@@ -20,47 +20,37 @@ class TestRestAPI(TestCase):
 
     def test_search_users(self):
         with app.app_context():
-            response = self.app.get('/search_users/?param=user&limit=2')
+            response = self.app.get('/search_users/?param=t&limit=1')
+            print(response.data)
 
             user1 = {
-                "user_id": 1,
-                "nick": "the.good",
-                "name": "Clint Eastwood",
-                "avatar": "avatars/d9099cd0d3e6cb47fe3a9b0e631901fa.png"
-            }
-
-            user2 = {
                 "user_id": 2,
-                "nick": "the.bad",
-                "name": "Pack Man",
-                "avatar": "avatars.png"
+                "nick": "tomy_cash",
+                "name": "Tomy Cash",
+                "avatar": "www.tomy.cash.ru"
             }
 
-            expect = jsonify({"users": [user1, user2]})
+            expect = jsonify({"users": [user1]})
             self.assertEqual(200, response.status_code)
             self.assertEqual("application/json", response.mimetype)
             self.assertTrue(compare_two_json(expect.data, response.data))
 
-    def test_search_chats(self):
+    def test_list_chats(self):
         with app.app_context():
-            response = self.app.get('/search_chats/?param=chat&limit=2')
+            response = self.app.get('/list_chats/?userid=1')
 
             chat1 = {
                 "chat_id": 1,
-                "is_group_chat": False,
-                "topic": "Chuck Norris",
-                "last_message": "argh!",
-                "new_messages": 30,
-                "last_read_message_id": 214
+                "is_group_chat": True,
+                "topic": "general",
+                "last_message": "Hello, everyone!"
             }
 
             chat2 = {
                 "chat_id": 2,
-                "is_group_chat": True,
-                "topic": "Mark Twen",
-                "last_message": "YOU!",
-                "new_messages": 13,
-                "last_read_message_id": 41
+                "is_group_chat": False,
+                "topic": "Chat with teacher",
+                "last_message": "OK, do it"
             }
 
             expect = jsonify({"chats": [chat1, chat2]})
@@ -70,15 +60,13 @@ class TestRestAPI(TestCase):
 
     def test_create_pers_chat(self):
         with app.app_context():
-            response = self.app.post('/create_pers_chat/?user_id=2')
+            response = self.app.post('/create_pers_chat/?fuserid=1&suserid=3')
 
             chat = {
-                "chat_id": 1,
+                "chat_id": 2,
                 "is_group_chat": False,
-                "topic": "Chuck Norris",
-                "last_message": "argh!",
-                "new_messages": 30,
-                "last_read_message_id": 214
+                "topic": "Chat with teacher",
+                "last_message": "OK, do it",
             }
 
             expect = jsonify({"chat": chat})
