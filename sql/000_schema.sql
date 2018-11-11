@@ -62,10 +62,10 @@ CREATE TABLE attachments
     REFERENCES messages,
   type       TEXT    NOT NULL
     CONSTRAINT attachments_type_check
-    CHECK (length(type) < 32)
-    CONSTRAINT attachments_type_check1
-    CHECK (length(type) < 2048),
+    CHECK (length(type) < 32),
   url        TEXT    NOT NULL
+    CONSTRAINT attachments_url_check
+    CHECK (length(type) < 2048)
 );
 
 CREATE TABLE members

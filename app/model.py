@@ -62,6 +62,13 @@ def create_new_member(user_id, chat_id):
     """, user_id=int(user_id), chat_id=chat_id)
 
 
+def create_member_with_last_read_message(user_id, chat_id, last_read_message_id):
+    return db.insert("""
+    INSERT INTO members (user_id, chat_id, last_read_message_id)
+    VALUES (%(user_id)s, %(chat_id)s, %(last_read_message_id)s)
+    """, user_id=int(user_id), chat_id=int(chat_id), last_read_message_id=int(last_read_message_id))
+
+
 def get_chat_by_id(chat_id):
     return db.query_one("""
     SELECT * FROM chats
@@ -76,3 +83,34 @@ def get_max_chat_id():
     ORDER BY chat_id DESC 
     LIMIT 1
     """)
+
+
+def add_new_message(user_id, chat_id, content):
+    return db.insert("""
+    INSERT INTO messages (user_id, chat_id, content)
+    VALUES (%(user_id)s, %(chat_id)s, %(content)s)
+    """, user_id=int(user_id), chat_id=int(chat_id), content=str(content))
+
+
+def get_max_message_id():
+    return db.query_one("""
+    SELECT message_id 
+    FROM messages 
+    ORDER BY message_id DESC 
+    LIMIT 1
+    """)
+
+
+def add_new_attachment(chat_id, user_id, message_id, type, url):
+    return db.insert("""
+    INSERT INTO attachments (chat_id, user_id, message_id, type, url)
+    VALUES (%(chat_id)s, %(user_id)s, %(message_id)s, %(type)s, %(url)s)
+    """, chat_id=int(chat_id), user_id=int(user_id), message_id=int(message_id),
+                     type=str(type), url=str(url))
+
+
+def get_message_by_id(message_id):
+    return db.query_one("""
+        SELECT * FROM messages
+        WHERE message_id = %(message_id)s
+        """, message_id=int(message_id))

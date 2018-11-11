@@ -1,5 +1,5 @@
 from flask import request, jsonify
-
+from datetime import datetime
 from app import app, model
 
 
@@ -109,20 +109,21 @@ def leave_group_chat():
     return response
 
 
-@app.route('/send_message/', methods=['POST'])
+@app.route('/send_message/', methods=['GET'])
 def send_message():
+    user_id = int(request.args.get('user_id'))
     chat_id = int(request.args.get('chat_id'))
     content = str(request.args.get('content'))
-    attach_id = int(request.args.get('attach_id'))
+    attach_id = int(request.args.get('attach_id', 0))
 
-    message = {
-        "message_id": 200,
-        "chat_id": chat_id,
-        "user_id": 22,
-        "content": content,
-        "added_at": 1540198594
-    }
+    model.add_new_message(user_id, chat_id, content)
+    message_id = int(model.get_max_message_id().get('message_id'))
+    model.create_member_with_last_read_message(user_id, chat_id, message_id)
 
+    if attach_id != 0:
+        model.add_new_attachment(chat_id, user_id, message_id, 'some_type', 'some_url')
+
+    message = model.get_message_by_id(message_id)
     response = jsonify({"message": message})
     response.status_code = 200
     return response
