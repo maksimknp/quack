@@ -1,5 +1,4 @@
-from app.homework4 import app, jsonrpc
-from flask import request, abort, jsonify
+from app import jsonrpc
 
 
 @jsonrpc.method("print_name")

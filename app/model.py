@@ -1,4 +1,4 @@
-from app.homework5 import db
+from app import db
 
 
 def list_messages_by_chat(chat_id, limit):

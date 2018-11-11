@@ -1,8 +1,9 @@
 import flask
 import psycopg2
-from instance import config
-from app.homework4 import app
 import psycopg2.extras
+
+from app import app
+from instance import config
 
 
 def get_connection():

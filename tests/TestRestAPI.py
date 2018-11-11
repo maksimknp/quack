@@ -1,7 +1,8 @@
 from unittest import TestCase
-from app.homework4 import app
-from flask import jsonify, json
 
+from flask import jsonify
+
+from app import app
 from tests.testUtils.TestRestAPIUtils import compare_two_json
 
 

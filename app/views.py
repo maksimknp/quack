@@ -1,8 +1,6 @@
-import json
+from flask import request, jsonify
 
-from app.homework4 import app
-from flask import request, abort, jsonify
-from app.homework5 import model
+from app import app, model
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -12,7 +10,7 @@ def login():
         <html>
             <head></head>
             <body>
-                <form method="POST", action ="/form/">
+                <form method="POST", action ="/login/">
                     <input name="username" >
                     <input name="password" >
                     <input type="submit" >
