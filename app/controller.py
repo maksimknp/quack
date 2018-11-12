@@ -42,7 +42,7 @@ def list_chats():
     return response
 
 
-@app.route('/create_pers_chat/', methods=['POST'])
+@app.route('/create_pers_chat/', methods=['GET'])
 def create_pers_chat():
     first_user_id = int(request.args.get('fuserid'))
     second_user_id = int(request.args.get('suserid'))
@@ -61,7 +61,7 @@ def create_pers_chat():
             break
 
     if new_chat_id == 0:
-        model.create_new_personal_chat()
+        print(model.create_new_personal_chat())
         new_chat_id = int(model.get_max_chat_id().get('chat_id'))
         model.create_new_member(first_user_id, new_chat_id)
         model.create_new_member(second_user_id, new_chat_id)
@@ -109,7 +109,7 @@ def leave_group_chat():
     return response
 
 
-@app.route('/send_message/', methods=['GET'])
+@app.route('/send_message/', methods=['POST'])
 def send_message():
     user_id = int(request.args.get('user_id'))
     chat_id = int(request.args.get('chat_id'))
@@ -164,3 +164,14 @@ def upload_file():
     response = jsonify({"attach": attach})
     response.status_code = 200
     return response
+
+
+@app.route('/chat_messages/', methods=['GET'])
+def chat_messages():
+    chat_id = int(request.args.get('chat_id'))
+    limit = int(request.args.get('limit'))
+    messages = model.list_messages_by_chat(chat_id, limit)
+    response = jsonify({"messages": messages})
+    response.status_code = 200
+    return response
+
