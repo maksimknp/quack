@@ -1,5 +1,4 @@
 from flask import request, jsonify
-from datetime import datetime
 from app import app, model
 
 
@@ -42,7 +41,7 @@ def list_chats():
     return response
 
 
-@app.route('/create_pers_chat/', methods=['GET'])
+@app.route('/create_pers_chat/', methods=['POST'])
 def create_pers_chat():
     first_user_id = int(request.args.get('fuserid'))
     second_user_id = int(request.args.get('suserid'))
@@ -55,14 +54,13 @@ def create_pers_chat():
     for i in personal_chats:
         chat_id = i.get('chat_id')
 
-        other_user_id = model.get_members_by_chat_without_user(chat_id, first_user_id).get('user_id')
+        other_user_id = model.get_member_by_chat_without_user(first_user_id, chat_id).get('user_id')
         if other_user_id == second_user_id:
             new_chat_id = chat_id
             break
 
     if new_chat_id == 0:
-        print(model.create_new_personal_chat())
-        new_chat_id = int(model.get_max_chat_id().get('chat_id'))
+        new_chat_id = model.create_new_personal_chat()
         model.create_new_member(first_user_id, new_chat_id)
         model.create_new_member(second_user_id, new_chat_id)
 
@@ -116,8 +114,7 @@ def send_message():
     content = str(request.args.get('content'))
     attach_id = int(request.args.get('attach_id', 0))
 
-    model.add_new_message(user_id, chat_id, content)
-    message_id = int(model.get_max_message_id().get('message_id'))
+    message_id = int(model.add_new_message(user_id, chat_id, content))
     model.create_member_with_last_read_message(user_id, chat_id, message_id)
 
     if attach_id != 0:
@@ -131,16 +128,13 @@ def send_message():
 
 @app.route('/read_message/')
 def read_message():
-    message_id = int(request.args.get('message_id'))
+    message_id = int(request.args.get('messageid'))
+    user_id = int(request.args.get('userid'))
 
-    chat = {
-        "chat_id": 1,
-        "is_group_chat": False,
-        "topic": "abracadabra",
-        "last_message": "argh!",
-        "new_messages": 30,
-        "last_read_message_id": 214
-    }
+    chat_id = model.get_message_by_id(message_id).get('chat_id')
+    print(chat_id)
+    model.decrease_message_count_by_user_and_chat(user_id, chat_id)
+    chat = model.get_chat_with_new_messages(user_id, chat_id)
 
     response = jsonify({"chat": chat})
     response.status_code = 200
@@ -168,7 +162,7 @@ def upload_file():
 
 @app.route('/chat_messages/', methods=['GET'])
 def chat_messages():
-    chat_id = int(request.args.get('chat_id'))
+    chat_id = int(request.args.get('chatid'))
     limit = int(request.args.get('limit'))
     messages = model.list_messages_by_chat(chat_id, limit)
     response = jsonify({"messages": messages})
