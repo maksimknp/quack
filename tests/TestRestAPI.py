@@ -24,11 +24,11 @@ class TestRestAPI(TestCase):
     def test_search_users(self):
         with app.app_context():
             params = json.loads('{"param": "t", "limit": 1}')
-            print("""{"jsonrpc": "2.0", "method": "search_users", "params": """ + str(params) + """, "id": "1"}""")
+            print("""{"jsonrpc": "2.0", "method": "search_users", "params": {"param": "t", "limit": 1}, "id": "1"}""")
             response = self.app.post('/api/',
                                      data="""{"jsonrpc": "2.0", "method": "search_users", "params": """
-                                          + str(params) +
-                                          """, "id": "1"}""")
+                                          + """{"param": "t", "limit": 1}"""
+                                            +""", "id": "1"}""")
             print(response.data)
 
             user1 = {

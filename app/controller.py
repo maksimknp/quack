@@ -11,11 +11,11 @@ def login():
 
 
 @jsonrpc.method("search_users")
-def search_users():
+def search_users(param, limit):
     print('--------------------------')
-    query = str(request.args.get('param'))
-    limit = int(request.args.get('limit'))
-    users = model.find_users_by_name_or_nick(query, limit)
+    # query = str(request.args.get('param'))
+    # limit = int(request.args.get('limit'))
+    users = model.find_users_by_name_or_nick(param, limit)
     response = jsonify({"users": users})
     response.status_code = 200
     return response
