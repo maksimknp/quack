@@ -1,5 +1,5 @@
 from unittest import TestCase
-
+import json
 from flask import jsonify
 
 from app import app
@@ -12,15 +12,23 @@ class TestRestAPI(TestCase):
 
     def test_login(self):
         with app.app_context():
-            response = self.app.post('/login/', data={"user_name": "ab", "password": "ba"})
-            expect = jsonify({"user_name": "ab", "password": "ba"})
+            params = json.loads({"username": "ab", "password": "ba"})
+            response = self.app.post('/api/',
+                                     data={"jsonrpc": "2.0", "method": "login", "params": [params], "id": "1"})
+            expect = jsonify({"username": "ab", "password": "ba"})
+            print(response)
             self.assertEqual(200, response.status_code)
             self.assertEqual("application/json", response.mimetype)
             self.assertTrue(compare_two_json(expect.data, response.data))
 
     def test_search_users(self):
         with app.app_context():
-            response = self.app.get('/search_users/?param=t&limit=1')
+            params = json.loads('{"param": "t", "limit": 1}')
+            print("""{"jsonrpc": "2.0", "method": "search_users", "params": """ + str(params) + """, "id": "1"}""")
+            response = self.app.post('/api/',
+                                     data="""{"jsonrpc": "2.0", "method": "search_users", "params": """
+                                          + str(params) +
+                                          """, "id": "1"}""")
             print(response.data)
 
             user1 = {

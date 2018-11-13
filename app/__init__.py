@@ -4,7 +4,7 @@ from flask_jsonrpc import JSONRPC
 from instance.config import ProductionConfig
 
 app = Flask(__name__)
-jsonrpc = JSONRPC(app, '/appi/')
+jsonrpc = JSONRPC(app, '/api/')
 app.config.from_object(ProductionConfig)
 
 from app.controller import *

@@ -1,29 +1,18 @@
 from flask import request, jsonify
-from app import app, model
+from app import app, model, jsonrpc
 
 
-@app.route('/login/', methods=['GET', 'POST'])
+@jsonrpc.method("login")
 def login():
-    if request.method == "GET":
-        return """
-        <html>
-            <head></head>
-            <body>
-                <form method="POST", action ="/login/">
-                    <input name="username" >
-                    <input name="password" >
-                    <input type="submit" >
-                </form>
-            </body>
-        </html>"""
-    else:
-        response = jsonify(request.form)
-        response.status_code = 200
-        return response
+    response = jsonify(request.data)
+    print(response)
+    response.status_code = 200
+    return response
 
 
-@app.route('/search_users/')
+@jsonrpc.method("search_users")
 def search_users():
+    print('--------------------------')
     query = str(request.args.get('param'))
     limit = int(request.args.get('limit'))
     users = model.find_users_by_name_or_nick(query, limit)

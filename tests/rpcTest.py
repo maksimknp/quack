@@ -1,5 +1,6 @@
 from unittest import TestCase
-from app.homework4 import app
+from app import app
+import json
 
 
 class JSONRPCTest(TestCase):
@@ -7,7 +8,7 @@ class JSONRPCTest(TestCase):
         self.app = app.test_client()
 
     def test_get_name(self):
-        rv = self.app.post('/appi/', data='{"jsonrpc": "2.0", "method": "print_name", "params": [], "id": "1" }')
+        rv = self.app.post('/api/', data='{"jsonrpc": "2.0", "method": "print_name", "params": [], "id": "1" }')
         print(rv.data)
-        self.assertEqual('', rv.data)
+        self.assertEqual('', json.loads(rv.data))
 
