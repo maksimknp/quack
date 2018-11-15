@@ -70,7 +70,7 @@ def create_new_member(user_id, chat_id):
     INSERT INTO members (user_id, chat_id)
     VALUES (%(user_id)s, %(chat_id)s)
     RETURNING user_id
-    """, user_id=int(user_id), chat_id=chat_id)
+    """, user_id=int(user_id), chat_id=int(chat_id))
 
 
 def create_member_with_last_read_message(user_id, chat_id, last_read_message_id):

@@ -3,37 +3,30 @@ from app import app, model, jsonrpc
 
 
 @jsonrpc.method("login")
-def login():
-    response = jsonify(request.data)
-    print(response)
+def login(username, password):
+    response = jsonify({"username": username, "password": password})
     response.status_code = 200
     return response
 
 
 @jsonrpc.method("search_users")
 def search_users(param, limit):
-    print('--------------------------')
-    # query = str(request.args.get('param'))
-    # limit = int(request.args.get('limit'))
     users = model.find_users_by_name_or_nick(param, limit)
     response = jsonify({"users": users})
     response.status_code = 200
     return response
 
 
-@app.route('/list_chats/')
-def list_chats():
-    user_id = str(request.args.get('userid'))
+@jsonrpc.method('list_chats')
+def list_chats(user_id):
     chats = model.list_chats_by_user(user_id)
     response = jsonify({"chats": chats})
     response.status_code = 200
     return response
 
 
-@app.route('/create_pers_chat/', methods=['POST'])
-def create_pers_chat():
-    first_user_id = int(request.args.get('fuserid'))
-    second_user_id = int(request.args.get('suserid'))
+@jsonrpc.method('create_pers_chat')
+def create_pers_chat(first_user_id, second_user_id):
 
     if first_user_id == second_user_id:
         return
@@ -44,7 +37,8 @@ def create_pers_chat():
         chat_id = i.get('chat_id')
 
         other_user_id = model.get_member_by_chat_without_user(first_user_id, chat_id).get('user_id')
-        if other_user_id == second_user_id:
+
+        if other_user_id == int(second_user_id):
             new_chat_id = chat_id
             break
 
@@ -59,9 +53,8 @@ def create_pers_chat():
     return response
 
 
-@app.route('/create_group_chat/', methods=['POST'])
-def create_group_chat():
-    topic = str(request.args.get('topic'))
+@jsonrpc.method('create_group_chat')
+def create_group_chat(topic):
 
     chat = {
         "chat_id": 1,
@@ -77,31 +70,24 @@ def create_group_chat():
     return response
 
 
-@app.route('/add_members_to_group_chat/', methods=['POST'])
-def add_members_to_group_chat():
-    chat_id = int(request.args.get('chat_id'))
-    user_ids = list(request.args.get('user_ids'))
+@jsonrpc.method('add_members_to_group_chat')
+def add_members_to_group_chat(chat_id, user_ids):
     # No-op.
     response = jsonify({})
     response.status_code = 200
     return response
 
 
-@app.route('/leave_group_chat/', methods=['POST'])
-def leave_group_chat():
-    chat_id = int(request.args.get('chat_id'))
+@jsonrpc.method('leave_group_chat')
+def leave_group_chat(chat_id):
     # No-op.
     response = jsonify({})
     response.status_code = 200
     return response
 
 
-@app.route('/send_message/', methods=['POST'])
-def send_message():
-    user_id = int(request.args.get('user_id'))
-    chat_id = int(request.args.get('chat_id'))
-    content = str(request.args.get('content'))
-    attach_id = int(request.args.get('attach_id', 0))
+@jsonrpc.method('send_message')
+def send_message(user_id, chat_id, content, attach_id=0):
 
     message_id = int(model.add_new_message(user_id, chat_id, content))
     model.create_member_with_last_read_message(user_id, chat_id, message_id)
@@ -115,13 +101,10 @@ def send_message():
     return response
 
 
-@app.route('/read_message/')
-def read_message():
-    message_id = int(request.args.get('messageid'))
-    user_id = int(request.args.get('userid'))
+@jsonrpc.method('read_message')
+def read_message(message_id, user_id):
 
     chat_id = model.get_message_by_id(message_id).get('chat_id')
-    print(chat_id)
     model.decrease_message_count_by_user_and_chat(user_id, chat_id)
     chat = model.get_chat_with_new_messages(user_id, chat_id)
 
@@ -130,10 +113,8 @@ def read_message():
     return response
 
 
-@app.route('/upload_file/', methods=['POST'])
-def upload_file():
-    chat_id = int(request.args.get('chat_id'))
-    content = str(request.args.get('content'))
+@jsonrpc.method('upload_file')
+def upload_file(chat_id, content):
 
     attach = {
         "attach_id": 1,
@@ -149,12 +130,9 @@ def upload_file():
     return response
 
 
-@app.route('/chat_messages/', methods=['GET'])
-def chat_messages():
-    chat_id = int(request.args.get('chatid'))
-    limit = int(request.args.get('limit'))
+@jsonrpc.method('chat_messages')
+def chat_messages(chat_id, limit):
     messages = model.list_messages_by_chat(chat_id, limit)
     response = jsonify({"messages": messages})
     response.status_code = 200
     return response
-

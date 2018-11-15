@@ -3,6 +3,8 @@ DB_HOST = 'localhost'
 DB_USER = 'quack'
 DB_PASS = 'quack'
 
+JSONRPC_URL = '/api/'
+
 
 class ProductionConfig(object):
     pass
